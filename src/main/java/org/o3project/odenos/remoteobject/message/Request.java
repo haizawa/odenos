@@ -28,8 +28,9 @@ import java.io.IOException;
  */
 public class Request extends MessageBodyUnpacker {
 
-  private static final int MSG_NUM = 4;
+  private static final int MSG_NUM = 5;
 
+  public String srcId = "unknown";
   public String objectId;
   public Method method;
   public String path;
@@ -60,9 +61,26 @@ public class Request extends MessageBodyUnpacker {
     this.body = body;
   }
 
+  /**
+   * Constructor.
+   * @param srcId src object ID. (Logic)
+   * @param dstId dst object ID. (Network)
+   * @param method a method.
+   * @param path a path.
+   * @param body contents.
+   */
+  public Request(String srcId, String dstId, Method method, String path, Object body) {
+    this.srcId = srcId;
+    this.objectId = dstId;
+    this.method = method;
+    this.path = path;
+    this.body = body;
+  }
+
   @Override
   public void readFrom(Unpacker unpacker) throws IOException {
     unpacker.readArrayBegin();
+    srcId = unpacker.readString();
     objectId = unpacker.readString();
     method = Method.valueOf(unpacker.readString());
     path = unpacker.readString();
@@ -73,6 +91,7 @@ public class Request extends MessageBodyUnpacker {
   @Override
   public void writeTo(Packer packer) throws IOException {
     packer.writeArrayBegin(MSG_NUM);
+    packer.write(srcId);
     packer.write(objectId);
     packer.write(method.name());
     packer.write(path);
@@ -93,6 +112,7 @@ public class Request extends MessageBodyUnpacker {
 
     ToStringBuilder sb = new ToStringBuilder(this);
 
+    sb.append("srcId", srcId);
     sb.append("objectId", objectId);
     sb.append("method", method);
     sb.append("path", path);
@@ -100,5 +120,4 @@ public class Request extends MessageBodyUnpacker {
 
     return sb.toString();
   }
-
 }

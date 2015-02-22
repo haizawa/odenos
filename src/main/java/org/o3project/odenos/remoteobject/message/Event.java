@@ -28,7 +28,8 @@ import java.io.IOException;
  */
 public class Event extends MessageBodyUnpacker {
 
-  private static final int MSG_NUM = 3;
+  private static final int MSG_NUM = 4;
+  private String triggerId ="unknown";
   public String publisherId;
   public String eventType;
 
@@ -46,6 +47,20 @@ public class Event extends MessageBodyUnpacker {
 
   /**
    * Constructor.
+   * @param triggerId request objectID.
+   * @param publisherId publisher ID.
+   * @param eventType type of events.
+   * @param body Contents of events.
+   */
+  public Event(String triggerId, String publisherId, String eventType, Object body) {
+    this.triggerId = triggerId;
+    this.publisherId = publisherId;
+    this.eventType = eventType;
+    this.body = body;
+  }
+
+  /**
+   * Constructor.
    */
   public Event() {
   }
@@ -56,6 +71,13 @@ public class Event extends MessageBodyUnpacker {
    */
   public String getPublisherId() {
     return publisherId;
+  }
+  /**
+   * Set a publisher ID.
+   * @return publisherId Publisher ID.
+   */
+  public String getTriggerId() {
+    return triggerId;
   }
 
   /**
@@ -85,6 +107,7 @@ public class Event extends MessageBodyUnpacker {
   @Override
   public void readFrom(Unpacker unpacker) throws IOException {
     unpacker.readArrayBegin();
+    triggerId = unpacker.readString();
     publisherId = unpacker.readString();
     eventType = unpacker.readString();
     bodyValue = unpacker.readValue();
@@ -94,6 +117,7 @@ public class Event extends MessageBodyUnpacker {
   @Override
   public void writeTo(Packer packer) throws IOException {
     packer.writeArrayBegin(MSG_NUM);
+    packer.write(triggerId);
     packer.write(publisherId);
     packer.write(eventType);
     if (bodyValue != null) {
@@ -142,7 +166,8 @@ public class Event extends MessageBodyUnpacker {
     Event event = (Event) obj;
 
     if (StringUtils.equals(event.getPublisherId(), this.publisherId)
-        && (StringUtils.equals(event.getEventType(), this.eventType))) {
+        && (StringUtils.equals(event.getEventType(), this.eventType))
+        && (StringUtils.equals(event.getTriggerId(), this.triggerId))) {
       return true;
     }
 

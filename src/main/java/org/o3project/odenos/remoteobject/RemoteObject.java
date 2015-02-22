@@ -225,6 +225,11 @@ public class RemoteObject {
     Event event = new Event(getObjectId(), eventType, body);
     messageDispatcher.publishEventAsync(event);
   }
+  protected void publishEvent(String eventType, String requestObjId, Object body)
+      throws Exception {
+    Event event = new Event(requestObjId, getObjectId(), eventType, body);
+    messageDispatcher.publishEventAsync(event);
+  }
 
   /**
    * Subscribe events of other RemoteObjects. Caller should configure

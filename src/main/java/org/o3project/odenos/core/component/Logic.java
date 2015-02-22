@@ -233,7 +233,7 @@ public abstract class Logic extends Component {
           return;
         }
         NetworkInterface networkInterface = new NetworkInterface(
-            this.messageDispatcher, nwcId);
+            this.messageDispatcher, nwcId, this.getObjectId());
         this.networkInterfaces.put(nwcId, networkInterface);
         this.onConnectionChangedAdded(message);
         return;
@@ -441,7 +441,13 @@ public abstract class Logic extends Component {
     log.debug("onEvnet : objcetId = '" + this.getObjectId() + "'.");
 
     try {
-      if (event.eventType.equals(ComponentConnectionChanged.TYPE)) {
+      if (event.getTriggerId().equals(this.getObjectId())) {
+        log.debug("Recieved my trigger Event,  "
+          + event.getTriggerId() + " , " + event.getEventType());
+        return;
+      }
+
+      if (event.getEventType().equals(ComponentConnectionChanged.TYPE)) {
         log.debug("onEvnet ConnectionChanged : objcetId = '"
             + this.getObjectId() + "'.");
         onEventComponentConnection(event
@@ -449,38 +455,38 @@ public abstract class Logic extends Component {
         return;
       }
 
-      log.debug("Recieved Message: " + event.eventType);
-      if (event.eventType == null) {
+      log.debug("Recieved Message: " + event.getEventType());
+      if (event.getEventType() == null) {
         return;
       }
 
-      switch (event.eventType) {
+      switch (event.getEventType()) {
         case NodeChanged.TYPE:
-          onNodeChanged(event.publisherId,
+          onNodeChanged(event.getPublisherId(),
               event.getBody(NodeChanged.class));
           break;
         case PortChanged.TYPE:
-          onPortChanged(event.publisherId,
+          onPortChanged(event.getPublisherId(),
               event.getBody(PortChanged.class));
           break;
         case LinkChanged.TYPE:
-          onLinkChanged(event.publisherId,
+          onLinkChanged(event.getPublisherId(),
               event.getBody(LinkChanged.class));
           break;
         case FlowChanged.TYPE:
-          onFlowChanged(event.publisherId,
+          onFlowChanged(event.getPublisherId(),
               event.getBody(FlowChanged.class));
           break;
         case InPacketAdded.TYPE:
-          onInPacketAdded(event.publisherId,
+          onInPacketAdded(event.getPublisherId(),
               event.getBody(InPacketAdded.class));
           break;
         case OutPacketAdded.TYPE:
-          onOutPacketAdded(event.publisherId,
+          onOutPacketAdded(event.getPublisherId(),
               event.getBody(OutPacketAdded.class));
           break;
         default:
-          log.info("Unexpected event: " + event.eventType);
+          log.info("Unexpected event: " + event.getEventType());
           break;
       }
     } catch (ParseBodyException e) {

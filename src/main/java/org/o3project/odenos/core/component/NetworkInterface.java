@@ -70,6 +70,7 @@ public class NetworkInterface {
   public static final String PACKETS_PATH = "packets";
 
   private String networkId;
+  private String logicId ="unknown";
   private MessageDispatcher dispatcher;
 
   /**
@@ -87,11 +88,36 @@ public class NetworkInterface {
   }
 
   /**
+   * Constructor.
+   * @param dispatcher Message Dispatcher object.
+   * @param nwcId network ID.
+   * @param logicId logic ID.
+   */
+  public NetworkInterface(
+      final MessageDispatcher dispatcher,
+      final String nwcId,
+      final String logicId) {
+    this.networkId = nwcId;
+    this.dispatcher = dispatcher;
+    this.logicId = logicId;
+    log.debug("Create NetworkInterface : networkId = '" + this.networkId
+        + "'.");
+  }
+
+  /**
    * Returns a network ID.
    * @return network ID.
    */
   public String getNetworkId() {
     return networkId;
+  }
+
+  /**
+   * Returns a network ID.
+   * @return logic ID.
+   */
+  public String getLogicId() {
+    return logicId;
   }
 
   /**
@@ -1301,7 +1327,7 @@ public class NetworkInterface {
         + String.format(" [networkId : '%s']", this.networkId));
 
     Response rsp = null;
-    Request req = new Request(objId, method, path, body);
+    Request req = new Request(this.getLogicId(), objId, method, path, body);
     try {
       rsp = this.dispatcher.requestSync(req);
     } catch (Exception e) {

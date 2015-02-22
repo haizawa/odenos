@@ -300,8 +300,9 @@ public class MessageDispatcher implements Closeable, IMessageListener {
             log.debug("Event received:\n"
                 + "  MessageDispatcher: {}\n"
                 + "  channel: {}\n"
+                + "  eventTrigger: {}\n"
                 + "  body: {}",
-                sourceDispatcherId, channel,
+                sourceDispatcherId, channel, event.getTriggerId(),
                 event.getBodyValue());
           }
 

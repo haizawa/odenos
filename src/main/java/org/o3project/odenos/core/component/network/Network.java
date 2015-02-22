@@ -76,6 +76,7 @@ public class Network extends Component {
   private Topology topology;
   private FlowSet flowset;
   private PacketQueueSet packetQueue;
+  private String  requestObjId;
 
   public static final String PROPERTY_KEY_FLOW_TYPE = "flow_type";
 
@@ -184,10 +185,11 @@ public class Network extends Component {
     log.debug("");
 
     try {
-      log.debug("Received request : {}, {} {}",
-          getObjectId(), request.method, request.path);
+      log.debug("Received request : {} -> {}, {} {}",
+          request.srcId, getObjectId(), request.method, request.path);
       log.debug("Received body    : {}, {}", getObjectId(),
           request.getBodyValue());
+      this.requestObjId = request.srcId;
       RequestParser<IActionCallback>.ParsedRequest parsed = parser
           .parse(request);
       IActionCallback callback = parsed.getResult();
@@ -1315,7 +1317,7 @@ public class Network extends Component {
   protected Response postEvent(String eventType, Object body)
       throws Exception {
     log.debug("");
-    publishEvent(eventType, body);
+    publishEvent(eventType, this.requestObjId, body);
     return new Response(Response.ACCEPTED, null);
   }
 
