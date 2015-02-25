@@ -271,6 +271,14 @@ public class LinkLayerizerOnFlow {
     setLayerizedLinkStatus(link, basicFlow);
     layerizedIf.putLink(link);
 
+    if (isUpperLinkisync()) {
+      String lowerId = getNetworkIdByType(LinkLayerizer.LOWER_NETWORK);
+      NetworkInterface lowerIf = networkInterfaces.get(lowerId);
+      Link link = lowerIf.getLink(linkId);
+      setLayerizedLinkStatus(link, basicFlow);
+      lowerIf.putLink(link);
+    }
+
     if (!FlowStatus.FAILED.toString().equals(basicFlow.getStatus())) {
       return;
     }
