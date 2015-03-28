@@ -22,6 +22,10 @@ $ sudo pip3 install tornado
 $ sudo pip3 install tornado-redis
 ```
 
+Limitation
+----------
+Python/Ruby-based message_dispatcher does now work with this tool at the moment.
+
 
 Architecture
 ------------
@@ -37,8 +41,9 @@ Architecture
        | server    |
        +-----------+
           ^      |
- psubscribe'*'   |
-          |  pmessage (non-blocking IO: tornado-redis)
+subscribe'_monitor'
+          |      |
+          |  message (non-blocking IO: tornado-redis)
           |      |
           |      V
        +-----------+

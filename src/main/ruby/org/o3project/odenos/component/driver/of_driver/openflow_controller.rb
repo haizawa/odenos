@@ -53,7 +53,6 @@ module Odenos
           IPPROTO_TCP = 6
           IPPROTO_UDP = 17
 
-          PORT_ATTR_KEY_LINK_STATUS = 'link_status'
           PORT_ATTR_KEY_HW_ADDR = 'hw_addr'
 
           public
@@ -252,7 +251,7 @@ module Odenos
                 end
               end
 
-              info format(' packet_in [%s]', message.inspect)
+              debug format(' packet_in [%s]', message.inspect)
 
               # convert match
               # OFPFlowMacth for OpenFlow1.3
@@ -339,7 +338,7 @@ module Odenos
             # TODO
             # currently, block ipv6 packet
             if message.ipv6?
-              info 'drop ipv6 packet'
+              debug 'drop ipv6 packet'
               return
             end
             if message.udp?
@@ -516,7 +515,7 @@ module Odenos
             debug ">> #{__method__}"
 
             begin
-              info "on_out_packet_added( #{out_packet.inspect} )"
+              debug "on_out_packet_added( #{out_packet.inspect} )"
               match = OFPFlowMatch.new(out_packet.header)
               message = Marshal.load(out_packet.data)
 
@@ -545,7 +544,7 @@ module Odenos
 
               dpid = get_dpid out_packet.node
               # Use ports
-              info ">> out_packet info: #{out_packet.inspect}"
+              debug ">> out_packet info: #{out_packet.inspect}"
               out_packet.ports.each do|portid|
                 actions << Trema::Actions::SendOutPort.new(
                 port_number: get_of_port_no(out_packet.node, portid))
@@ -1400,7 +1399,7 @@ module Odenos
             end
               # Whole Flow setup complete
               case flow.status
-              when Flow::ESTABLISHING
+              when Flow::ESTABLISHING, Flow::NONE
                 begin
                   flow = getFlow(flow.flow_id, _nw_if)
                   flow.status = Flow::ESTABLISHED
@@ -1736,7 +1735,6 @@ module Odenos
             node.attributes[Node::ATTR_KEY_ADMIN_STATUS] = 'UP'
             node.attributes[Node::ATTR_KEY_OPER_STATUS] = 'UP'
             node.attributes[Node::ATTR_KEY_PHYSICAL_ID] = '%#x' % dpid
-            #node.attributes[Node::ATTR_KEY_VENDOR_ID] = ATTR_OFD_VENDORID
             node.attributes[Node::ATTR_KEY_VENDOR_ID] = @vendor_id
           end
 
@@ -1755,11 +1753,6 @@ module Odenos
             else
               port.attributes[Port::ATTR_KEY_ADMIN_STATUS] = 'DOWN'
             end
-            if _is_link_up(of_port)
-              port.attributes[PORT_ATTR_KEY_LINK_STATUS] = 'UP'
-            else
-              port.attributes[PORT_ATTR_KEY_LINK_STATUS] = 'DOWN'
-            end
             if _is_port_up(of_port) && _is_link_up(of_port)
               port.attributes[Port::ATTR_KEY_OPER_STATUS] = 'UP'
             else
@@ -1767,7 +1760,6 @@ module Odenos
             end
 
             port.attributes[Port::ATTR_KEY_PHYSICAL_ID] = '%d@%#x' % [of_port.port_no, dpid]
-            #port.attributes[Port::ATTR_KEY_VENDOR_ID] = ATTR_OFD_VENDORID
             port.attributes[Port::ATTR_KEY_VENDOR_ID] = @vendor_id
 
             port.attributes[PORT_ATTR_KEY_HW_ADDR] = of_port.hw_addr.to_s

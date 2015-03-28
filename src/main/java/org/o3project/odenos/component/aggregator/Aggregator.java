@@ -252,6 +252,9 @@ public class Aggregator extends Logic {
       }
       orgNwIf = networkInterfaces().get(orgNetworkId.get(0));
       aggNwIf = networkInterfaces().get(networkId);
+    } else {
+      log.error("Unexpected network type: {}", type);
+      throw new IllegalArgumentException("Unexpected network type: " + type);
     }
     // Update conversionTable.
     conversionTable().addEntryNetwork(
@@ -604,7 +607,7 @@ public class Aggregator extends Logic {
       aggNetworkIf.putNode(aggNodeMsg);
     }
 
-    // changed node's oper_status. ("UP" -> "DOWN")  
+    // changed node's oper_status. ("UP" -> "DOWN")
     Map<String, String> updateAttr = new HashMap<>();
     updateAttr.put(Logic.AttrElements.OPER_STATUS, STATUS_DOWN);
     aggNetworkIf.putAttributeOfNode(updateAttr);
@@ -987,7 +990,6 @@ public class Aggregator extends Logic {
     }
     // Aggregated Network ==> Aggregator
     dstFlow.setEnabled(srcFlow.getEnabled());
-    dstFlow.setStatus(srcFlow.getStatus());
     dstFlow.setPriority(srcFlow.getPriority());
     updateFlow(dstNetworkIf, srcNetworkIf, dstFlow, srcFlow);
 
@@ -1129,7 +1131,8 @@ public class Aggregator extends Logic {
       List<String> dstPorts = getConvPortIdByActions(
           aggNetworkIf.getNetworkId(), aggFlow.getEdgeActions());
       // Create a Path & Set Match.
-      List<String> path = createOriginalFlowPath(srcPort, dstPorts);
+      List<String> path
+          = createOriginalFlowPath(srcPort, dstPorts, pathCalculator);
       if (path == null
           || !setMatch(orgFlow.getMatches(), srcPort)) {
         aggFlow.setStatus(FlowStatus.FAILED.toString());
@@ -1222,7 +1225,8 @@ public class Aggregator extends Logic {
 
   protected List<String> createOriginalFlowPath(
       final String srcNode,
-      final List<String> dstNodes) {
+      final List<String> dstNodes,
+      final PathCalculator calc) {
     log.debug("");
 
     List<String> path = new ArrayList<String>();
@@ -1241,7 +1245,7 @@ public class Aggregator extends Logic {
       if (srcNList[1].equals(dstNId)) {
         continue;
       }
-      List<String> plist = pathCalculator.createPath(srcNList[1], dstNId);
+      List<String> plist = calc.createPath(srcNList[1], dstNId);
       if (plist == null || plist.size() == 0) {
         return null;
       }

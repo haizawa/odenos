@@ -142,10 +142,6 @@ public class RedisClient implements Closeable {
   /**
    * Sends a Redis command
    *
-   * <p>
-   * This method first establishes a TCP connection to Redis server.
-   * The TCP connection can be kept alive by setting keepAlive true
-   * when instantiating this class (its default is true).
    * @param command Redis command
    * @param args command arguments
    */
@@ -161,7 +157,6 @@ public class RedisClient implements Closeable {
   /**
    * Sends a Redis command.
    *
-   * <p>
    * @param cmd Redis command
    */
   public void sendCommand(final Command cmd) {
@@ -332,6 +327,8 @@ public class RedisClient implements Closeable {
 
   /**
    * Issues "SCRIPT exists" command to Redis server.
+   *
+   * @param sha1hash sha1hash
    */
   public void scriptExists(final byte[] sha1hash) {
     sendCommand(SCRIPT, EXISTS, sha1hash);
@@ -339,6 +336,8 @@ public class RedisClient implements Closeable {
 
   /**
    * Issues "SCRIPT load" command to Redis server.
+   *
+   * @param script script
    */
   public void scriptLoad(final byte[] script) {
     sendCommand(SCRIPT, LOAD, script);
@@ -346,6 +345,8 @@ public class RedisClient implements Closeable {
 
   /**
    * Issues "EVALSHA" command to Redis server.
+   *
+   * @param argv argv
    */
   public void evalsha(final byte[]... argv) {
     sendCommand(EVALSHA, argv);
@@ -406,7 +407,9 @@ public class RedisClient implements Closeable {
   /**
    * Reads a reply as a response to "PUBSUB numsub channel".
    *
+   * @param channel String
    * @return raw object list
+   * @throws ProtocolException channel mismatch
    */
   public long readPubsubNumsubReply(String channel)
       throws ProtocolException {

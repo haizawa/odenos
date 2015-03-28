@@ -23,6 +23,7 @@ import org.apache.commons.cli.ParseException;
 import org.o3project.odenos.component.aggregator.Aggregator;
 import org.o3project.odenos.component.federator.Federator;
 import org.o3project.odenos.component.learningswitch.LearningSwitch;
+import org.o3project.odenos.component.learningswitch.LearningSwitchVlan;
 import org.o3project.odenos.component.linklayerizer.LinkLayerizer;
 import org.o3project.odenos.component.slicer.Slicer;
 import org.o3project.odenos.core.component.DummyDriver;
@@ -200,6 +201,7 @@ public final class Odenos {
       if (monitorEnabled) {
         mode = EnumSet.of(MODE.RESEND_SUBSCRIBE_ON_RECONNECTED,
                           MODE.INCLUDE_SOURCE_OBJECT_ID,
+                          //MODE.LOOPBACK_DISABLED,
                           MODE.REFLECT_MESSAGE_TO_MONITOR);
       } else {
         mode = EnumSet.of(MODE.RESEND_SUBSCRIBE_ON_RECONNECTED);
@@ -249,6 +251,7 @@ public final class Odenos {
     romgr.registerComponents(this.findComponents(dir));
     sysmgr.addComponentManager(romgr.getProperty());
     romgr.setState(ObjectProperty.State.RUNNING);
+    
   }
 
   private Set<Class<? extends RemoteObject>> findComponents(String rootOfPackages) {
@@ -264,6 +267,7 @@ public final class Odenos {
     classes.add(Aggregator.class);
     classes.add(Federator.class);
     classes.add(LearningSwitch.class);
+    classes.add(LearningSwitchVlan.class);
     classes.add(LinkLayerizer.class);
     classes.add(Slicer.class);
     classes.add(Network.class);
