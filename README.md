@@ -42,3 +42,6 @@ If you find any bug, let us know by github's Issues page.
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/haizawa/odenos/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
+<a href="http://haizawa/odenos/master/README.md">
+  <img src="https://ga-beacon.appspot.com/UA-66647984-1/haizawa/odenos/master/README.md" />
+</a>
