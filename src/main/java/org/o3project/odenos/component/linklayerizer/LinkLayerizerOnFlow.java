@@ -20,8 +20,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.o3project.odenos.core.component.ConversionTable;
 import org.o3project.odenos.core.component.Logic;
-import org.o3project.odenos.core.component.Logic.AttrElements;
-import org.o3project.odenos.core.component.Logic.NetworkElements;
+import org.o3project.odenos.core.component.Component.AttrElements;
+import org.o3project.odenos.core.component.Component.NetworkElements;
 import org.o3project.odenos.core.component.NetworkInterface;
 import org.o3project.odenos.core.component.network.flow.Flow;
 import org.o3project.odenos.core.component.network.flow.FlowObject.FlowStatus;
@@ -263,6 +263,12 @@ public class LinkLayerizerOnFlow {
     String flowId = basicFlow.getFlowId();
     String linkId = layerizedLinks.get(flowId);
 
+    if ((FlowStatus.ESTABLISHED.toString().equals(status) && enable)
+        && (linkId == null)) {
+      addLayerizedLinkbyLowerFlow(networkId, basicFlow);
+      return;
+    }
+
     String layerizedId =
         getNetworkIdByType(LinkLayerizer.LAYERIZED_NETWORK);
     NetworkInterface layerizedIf = networkInterfaces.get(layerizedId);
@@ -430,8 +436,15 @@ public class LinkLayerizerOnFlow {
     String status = basicFlow.getStatus();
     boolean enable = basicFlow.getEnabled();
 
-    if (!(FlowStatus.ESTABLISHING.toString().equals(status) && enable)) {
-      logger.warn("invalid flow's status & enable.");
+    if ((FlowStatus.NONE.toString().equals(status))
+      ||(FlowStatus.TEARDOWN.toString().equals(status))
+      ||(FlowStatus.FAILED.toString().equals(status))) {
+        logger.warn("invalid flow's status.");
+        return;
+    }
+
+    if (!enable) {
+      logger.warn("invalid flow's disable.");
       return;
     }
 

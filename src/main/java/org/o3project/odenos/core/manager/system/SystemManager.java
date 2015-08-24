@@ -108,6 +108,7 @@ public class SystemManager extends RemoteObject {
     this.parser = this.createParser();
   }
 
+
   // When closed, componentManager will be deleted. (Expect when
   // componentManager is finalized, the components created by it automatically
   // deleted.)
@@ -132,8 +133,8 @@ public class SystemManager extends RemoteObject {
   }
 
   private void onComponentManagerChanged(ObjectPropertyChanged msg) {
-    if (msg.action() == ObjectPropertyChanged.Action.add.name()
-        || msg.action() == ObjectPropertyChanged.Action.update.name()) {
+    if (ObjectPropertyChanged.Action.valueOf(msg.action()) == ObjectPropertyChanged.Action.add
+        || ObjectPropertyChanged.Action.valueOf(msg.action()) == ObjectPropertyChanged.Action.update) {
       log.debug("onRemoteObjectManaagerChanged: " + msg.action());
       this.updateComponentManager(msg.curr().getObjectId(), msg.curr());
     }

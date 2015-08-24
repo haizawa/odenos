@@ -7,15 +7,15 @@
  * [Flow](#Flow)
     * [BasicFlow](#BasicFlow)
     * [OFPFlow](#OFPFlow)
+    * [BasicFlowMatch](#BasicFlowMatch)
+    * [OFPFlowMatch](#OFPFlowMatch)
+    * [FlowAction](#FlowAction)
+    * [OFPFlowAction](#OFPFlowAction)
  * [Packet](#Packet)
     * [InPacket(BasicInPacket)](#InPacket)
         * [OFPInPacket](#OFPInPacket)
     * [OutPacket(BasicOutPacket)](#OutPacket)
         * [OFPOutPacket](#OFPOutPacket)
-    * [BasicFlowMatch](#BasicFlowMatch)
-    * [OFPFlowMatch](#OFPFlowMatch)
-    * [FlowAction](#FlowAction)
-    * [OFPFlowAction](#OFPFlowAction)
     * [PacketStatus](#PacketStatus)
  * [ObjectProperty](#ObjectProperty)
  * [ObjectSettings](#ObjectSettings)
@@ -72,11 +72,11 @@ attributes|dict{\<String>, \<String>}|See the table attributes.     | Optional |
 **Key**      | **Value** |**Description**                                              | init   | Direction of the reflected(*)
 -------------|-----------|-------------------------------------------------------------|--------|---------------
 admin_status | \<String> | "UP" : normal operation. <br> "DOWN" : failure operation.   | "UP"   | Upper -> Lower 
-oper_status  | \<String> | "UP" : Physical device normal. <br> "DOWN" : Physical device failure.    | any    | Lower -> Upper
+oper_status  | \<String> | "UP" : Physical device normal. <br> "DOWN" : Physical device failure.    | "UP"    | Lower -> Upper
 physical_id  | \<String> |ID of the physical device. Numbering in the driver.<br> For example, openflow driver to set the "dpid" | any         |   Lower  ->  Upper
 vendor        | \<String>  |Vendor name is set.<br> For example, It is used for the GUI system. | any | Lower -> Upper
 
-(*) **Lower** : Driver side. **Upper** : Controller side.
+(\*) **Lower** : Driver side. **Upper** : Controller side.
 
 
 ----
@@ -102,14 +102,14 @@ attributes|dict{\<String>, \<String>}|See the table attributes. | Optional  | Op
 **Key**       | **Value**  |**Description**                                              | init   | Direction of the reflected(*)
 --------------|------------|-------------------------------------------------------------|--------|-----------------
 admin_status  | \<String>  | "UP" : normal operation. <br> "DOWN" : failure operation.   | "UP"   | Upper -> Lower 
-oper_status   | \<String>  | "UP" : Physical device normal. <br> "DOWN" : Physical device failure.| any    | Lower -> Upper
+oper_status   | \<String>  | "UP" : Physical device normal. <br> "DOWN" : Physical device failure.| "UP"    | Lower -> Upper
 max_bandwidth | \<Number>  | Unit is Mbps. maximum bandwidth of the port.<br> Driver to set the value.| any    | Lower -> Upper
 unreserved_bandwidth | \<Number>  | Unit is Mbps. Current bandwidth of the port.<br > Driver to set the initial value. |max_bandwidth   | Upper -> Lower 
 physical_id   | \<String>  |ID of the physical device. Driver may assign this ID.<br> For example, openflow driver will assign like "port_no@dpid" | any         |   Lower  ->  Upper
 vendor        | \<String>  |Vendor name is set.<br> For example, It is used for the GUI system. | any | Lower -> Upper
 is_boundary   | "true" or "false" |[Boundary](#Boundary) setting is the "true" when enabled. <br> For example, It is used for the GUI system. | "false" |  Upper -> Lower 
 
-(*) **Lower** : Driver side. **Upper** : Controller side.
+(\*) **Lower** : Driver side. **Upper** : Controller side.
 
 
 ----
@@ -133,16 +133,16 @@ attributes|dict{\<String>, \<String>}|See the table attributes.   | Optional  | 
 ##### Attributes
 **Key**              | **Value** |**Description**                                                                      | init  | Direction of the reflected(*)
 ---------------------|-----------|-------------------------------------------------------------------------------------|-------|-----------------
-oper_status          | \<String> | "UP" : Physical device normal. <br> "DOWN" : Physical device failure.               | any   | Lower -> Upper
+oper_status          | \<String> | "UP" : Link is in a state ready to forward traffic. <br> "DOWN" : Link is in a state not ready to forward traffic.               | "UP"   | Lower -> Upper
 cost                 | \<Number> | link cost.                                                                          | 1     | Upper -> Lower              
 req_latency          | \<Number> | Unit is msec. Request latency. (There may be different from the actual latency.）   | any   | Upper -> Lower
 latency              | \<Number> | Unit is  msec.                                                                      | any   | Lower -> Upper                 
 req_bandwidth        | \<Number> | Unit is Mbps. Request bandwidth.(There may be different from the actual bandwidth.) | any   | Upper -> Lower
 max_bandwidth        | \<Number> | Unit is Mbps. maximum bandwidth of the port.<br> Driver to set the value.           | any   | Lower -> Upper
 unreserved_bandwidth | \<Number> | Unit is Mbps. Current bandwidth of the port.<br > Driver to set the initial value.  |max_bandwidth   | Upper -> Lower 
-establishment_status | \<string> |Use LinkLayerizer Only. Flowから生成されたlink. <br> "establishing" :  <br>   "established" :  <br> "establishing" である場合、その Link の oper_status は "DOWN" のみとする。| any    | -
+establishment_status | \<string> |Use LinkLayerizer Only. Link that was generated from Flow. <br> "establishing" :  <br>   "established" :  <br> If it is a "establishing", oper_status is "DOWN" | any    | -
 
-(*) **Lower** : Driver side. **Upper** : Controller side.
+(\*) **Lower** : Driver side. **Upper** : Controller side.
 
 
 ----
@@ -156,7 +156,7 @@ version    | \<String>  |NetworkCompnent will assign valid version in response m
 flow_id    | \<string>  |Unique flow's Identifier in this network.                       | -(*1)     |  Mandatory
 owner      | \<string>  |Author of flow.                                             | Mandatory |  Mandatory
 enabled    | \<boolean> |The value the owner is usually set.  "True":flow is activation.  "False":flow is invalidation. | Mandatory |  Mandatory
-priority   | \<number>  |value:0-65535. It is to be 65535 (max priority) if not set. | Mandatory |  Mandatory
+priority   | \<number>  |value:0-65535(max priority). It is to be 32768 if not set. | Mandatory |  Mandatory
 status     | \<string>  |see <State Transition Table> Flow status, Lower Layer Component(usually, Driver Component) makes a state transition.  | Optional(*3) |  Mandatory
 attributes |dict{\<String>, \<String>}|See the table attributes.                     | Optional  |  Optional  
 
@@ -194,11 +194,11 @@ latency      | \<Number>  | Unit is msec.     | any    | Lower  ->  Upper
 
 **State Current ↓ Next→**| **none** | **establishing** | **established** | **teardown** | **failed** | **(none Flow)**  
 ---------------------------|----------|------------------|-----------------|--------------|------------|----------------
-**none**                   |-         |Creating Flow     |-                |-             |-           |-             
-**establishing**           |-         |                  |Created/Updated Flow |-         |failure     |-            
-**established**            |-         |Updating Flow     |-                |Deleting Flow |failure     |-             
-**teardown**               |Invalid Flow |-              |-                |-             |failure     |Deleted Flow  
-**failed**                 |-         |-                 |Updating Flow    |Deleting Flow |-           |-             
+**none**                   |-         |Creating or Updating Flow     |-                |-             |-           |Deleted Flow       
+**establishing**           |-         |                  |Created/Updated Flow |Deleting Flow|failure     |-            
+**established**            |-         |Updating Flow     |-                |Deleting Flow or Invaliding Flow |failure     |-             
+**teardown**               |Deleted or Invalided Flow |-              |-             |-             |failure    |
+**failed**                 |-         |Updating Flow       |-             |Deleting Flow |-           |-             
 
 ### Sequence
 ----
@@ -384,7 +384,7 @@ latency      | \<Number>  | Unit is msec.     | any    | Lower  ->  Upper
 type         | \<String>   | type is "BasicFlow"       | Mandatory |  Mandatory
 matches      | list[[BasicFlowMatch](#BasicFlowMatch)] | One or more of the match conditions | Mandatory |  Mandatory
 path         | list[[Link](#Link).link_id ]            | list of [Link](#Link) that [Flow](#Flow) goes through. there is a need for a connected acyclic graph. | Mandatory |  Mandatory
-edge_actions | dict<[Node](#Node).node_id, list[[BasicFlowAction](#BasicFlowAction)]> |Action of edge node.  | Mandatory |  Mandatory
+edge_actions | dict<[Node](#Node).node_id, list[[FlowAction](#FlowAction)]> |Action of edge node.  | Mandatory |  Mandatory
 
 ##### example(JSON)
 
@@ -416,89 +416,7 @@ matches      | list[[OFPFlowMatch](#OFPFlowMatch)] | One or more of the match co
 idle_timeout | \<number>    | Units sec. Is regarded as 0 specified if it is omitted. | Optional  |  Optional  
 hard_timeout | \<number>    | Units sec. Is regarded as 0 specified if it is omitted. | Optional  |  Optional  
 path         | list[[Link](#Link).link_id ] | list of [Link](#Link) that [Flow](#Flow) goes through. there is a need for a connected acyclic graph. | Mandatory |  Mandatory
-edge_actions | dict<[Node](#Node).node_id, list[[BasicFlowAction](#BasicFlowAction)]> |Action of edge node.  | Mandatory |  Mandatory
-
-
-----
-#### <a name="Packet"> Packet</a>
-Packet of abstract class.
-
-**Key**   | **Value**    |**Description**                               | POST      | PUT 
-----------|--------------|----------------------------------------------|-----------|------------
-packet_id | \<String>    |Unique packet's Identifier in this network.   |   -       |  -
-type      | \<String>    |Packet Type. see blow.                         | Mandatory |  -
-attributes|dict{\<String>, \<String>}|                                  | Optional  |  -
-
-
-##### type
-
-**type**                     |  **description**
------------------------------|-----------------
-[InPacket](#InPacket)        | Packet_in of BasicFlow.  
-[OutPacket](#OutPacket)      | Packet_out of BasicFlow.  
-[OFPInPacket](#OFPInPacket)  | Packet_in of OFPFlow.  
-[OFPOutPacket](#OFPOutPacket)| Packet_out of OFPFlow.  
-
-----
-#### <a name="InPacket"> InPacket</a>
-represents Packet_in of BasicFlow.  
-
-**Key**   | **Value**    |**Description**                             | POST      | PUT 
-----------|--------------|--------------------------------------------|-----------|----------
-packet_id | \<String>    |Unique packet's Identifier in this network. |    -      |  -
-type      | \<String>    |Type is "InPacket"                          | Mandatory |  -
-node      | [Port](#Port).node_id |node_id to input the packet        | Mandatory |  -
-port      | [Port](#Port).port_id |port_id to input the packet        | Mandatory |  -
-header    | [BasicFlowMatch](#BasicFlowMatch) |header info.           | Mandatory |  -
-data      | \<Binary>    |payload                                     | Mandatory |  -
-attributes|dict{\<String>, \<String>}|                                | Optional  |  -
-
-
-----
-#### <a name="OFPInPacket"> OFPInPacket</a>  
-represents Packet_in of OFPFlow.  
-
-**Key**   | **Value**    |**Description**                             | POST      | PUT 
-----------|--------------|--------------------------------------------|-----------|----------
-packet_id | \<String>    |Unique packet's Identifier in this network. | - (*1)    |  -
-type      | \<String>    |"OFPInPacket"                               | Mandatory |  -
-node      | [Port](#Port).node_id |node_id to input the packet        | Mandatory |  -
-port      | [Port](#Port).nort_id |port_id to input the packet        | Mandatory |  -  
-header    | [OFPFlowMatch](#OFPFlowMatch) |header info.               | Mandatory |  -
-data      | \<Binary>    |payload                                     | Mandatory |  -
-attributes|dict{\<String>, \<String>}|                                | Optional  |  -
-
-
-----
-#### <a name="OutPacket"> OutPacket</a>  
-represents Packet_out of BasicFlow.  
-
-**Key**      | **Value**    |**Description**                             | POST      | PUT 
--------------|--------------|--------------------------------------------|-----------|----------
-packet_id    | \<String>    |Unique packet's Identifier in this network. | -         |  -
-type         | \<String>    |Type is "OutPacket"                         | Mandatory |  -
-node         |[Port](Port).node_id |node_id to output the packet.        | Mandatory |  -
-ports        |list[[Port](#port).port_id] |List of port for OutPacket. "ports" and "ports-except" can be specified only either.  | Optional |  -
-ports-except |list[[Port](#Port).port_id] |List of  except port for OutPacket. "ports" and "ports-except" can be specified only either.| Optional |  -
-header       |[BasicFlowMatch](#BasicFlowMatch) |header info.            | Mandatory |  -
-data         | \<Binary>    |payload                                     | Mandatory |  -
-attributes   |dict{\<String>, \<String>}|                                | Optional  |  -
-
-
-----
-#### <a name="OFPOutPacket"> OFPOutPacket</a>  
-represents Packet_out of OFPFlow.  
-
-**Key**      | **Value**    |**Description**                             | POST      | PUT 
--------------|--------------|--------------------------------------------|-----------|----------
-packet_id    | \<String>    |Unique packet's Identifier in this network. | -         |  -
-type         | \<String>    |Type is "OutPacket"                         | Mandatory |  -
-node         |[Port](Port).node_id |node_id to output the packet.        | Mandatory |  -
-ports        |list[[Port](#port).port_id] |List of port for ignore OutPacket. "ports" and "ports-except" can be specified only either.  | Optional |  -
-ports-except |list[[Port](#Port).port_id] |List of  except port for OutPacket. "ports" and "ports-except" can be specified only either.| Optional |  -
-header       |[BasicFlowMatch](#BasicFlowMatch) |header info.            | Mandatory |  -
-data         | \<Binary>    |payload                                     | Mandatory |  -
-attributes   |dict{\<String>, \<String>}|                                | Optional  |  -
+edge_actions | dict<[Node](#Node).node_id, list[[OFPFlowAction](#OFPFlowAction)]> |Action of edge node.  | Mandatory |  Mandatory
 
 
 ----
@@ -716,6 +634,88 @@ experimenter |\<Integer>          |Experimenter ID which takes the same form as 
 body    | \<Integer>              | Experimenter defined Experimenter-defined arbitrary additional data.
 
 ----
+#### <a name="Packet"> Packet</a>
+Packet of abstract class.
+
+**Key**   | **Value**    |**Description**                               | POST      | PUT 
+----------|--------------|----------------------------------------------|-----------|------------
+packet_id | \<String>    |Unique packet's Identifier in this network.   |   -       |  -
+type      | \<String>    |Packet Type. see blow.                         | Mandatory |  -
+attributes|dict{\<String>, \<String>}|                                  | Optional  |  -
+
+
+##### type
+
+**type**                     |  **description**
+-----------------------------|-----------------
+[InPacket](#InPacket)        | Packet_in of BasicFlow.  
+[OutPacket](#OutPacket)      | Packet_out of BasicFlow.  
+[OFPInPacket](#OFPInPacket)  | Packet_in of OFPFlow.  
+[OFPOutPacket](#OFPOutPacket)| Packet_out of OFPFlow.  
+
+----
+#### <a name="InPacket"> InPacket</a>
+represents Packet_in of BasicFlow.  
+
+**Key**   | **Value**    |**Description**                             | POST      | PUT 
+----------|--------------|--------------------------------------------|-----------|----------
+packet_id | \<String>    |Unique packet's Identifier in this network. |    -      |  -
+type      | \<String>    |Type is "InPacket"                          | Mandatory |  -
+node      | [Port](#Port).node_id |node_id to input the packet        | Mandatory |  -
+port      | [Port](#Port).port_id |port_id to input the packet        | Mandatory |  -
+header    | [BasicFlowMatch](#BasicFlowMatch) |header info.           | Mandatory |  -
+data      | \<Binary>    |payload                                     | Mandatory |  -
+attributes|dict{\<String>, \<String>}|                                | Optional  |  -
+
+
+----
+#### <a name="OFPInPacket"> OFPInPacket</a>  
+represents Packet_in of OFPFlow.  
+
+**Key**   | **Value**    |**Description**                             | POST      | PUT 
+----------|--------------|--------------------------------------------|-----------|----------
+packet_id | \<String>    |Unique packet's Identifier in this network. | - (*1)    |  -
+type      | \<String>    |"OFPInPacket"                               | Mandatory |  -
+node      | [Port](#Port).node_id |node_id to input the packet        | Mandatory |  -
+port      | [Port](#Port).nort_id |port_id to input the packet        | Mandatory |  -  
+header    | [OFPFlowMatch](#OFPFlowMatch) |header info.               | Mandatory |  -
+data      | \<Binary>    |payload                                     | Mandatory |  -
+attributes|dict{\<String>, \<String>}|                                | Optional  |  -
+
+
+----
+#### <a name="OutPacket"> OutPacket</a>  
+represents Packet_out of BasicFlow.  
+
+**Key**      | **Value**    |**Description**                             | POST      | PUT 
+-------------|--------------|--------------------------------------------|-----------|----------
+packet_id    | \<String>    |Unique packet's Identifier in this network. | -         |  -
+type         | \<String>    |Type is "OutPacket"                         | Mandatory |  -
+node         |[Port](Port).node_id |node_id to output the packet.        | Mandatory |  -
+ports        |list[[Port](#port).port_id] |List of port for OutPacket. "ports" and "ports-except" can be specified only either.  | Optional |  -
+ports-except |list[[Port](#Port).port_id] |List of  except port for OutPacket. "ports" and "ports-except" can be specified only either.| Optional |  -
+header       |[BasicFlowMatch](#BasicFlowMatch) |header info.            | Mandatory |  -
+data         | \<Binary>    |payload                                     | Mandatory |  -
+attributes   |dict{\<String>, \<String>}|                                | Optional  |  -
+
+
+----
+#### <a name="OFPOutPacket"> OFPOutPacket</a>  
+represents Packet_out of OFPFlow.  
+
+**Key**      | **Value**    |**Description**                             | POST      | PUT 
+-------------|--------------|--------------------------------------------|-----------|----------
+packet_id    | \<String>    |Unique packet's Identifier in this network. | -         |  -
+type         | \<String>    |Type is "OutPacket"                         | Mandatory |  -
+node         |[Port](Port).node_id |node_id to output the packet.        | Mandatory |  -
+ports        |list[[Port](#port).port_id] |List of port for ignore OutPacket. "ports" and "ports-except" can be specified only either.  | Optional |  -
+ports-except |list[[Port](#Port).port_id] |List of  except port for OutPacket. "ports" and "ports-except" can be specified only either.| Optional |  -
+header       |[BasicFlowMatch](#BasicFlowMatch) |header info.            | Mandatory |  -
+data         | \<Binary>    |payload                                     | Mandatory |  -
+attributes   |dict{\<String>, \<String>}|                                | Optional  |  -
+
+
+----
 #### <a name="PacketStatus"> PacketStatus</a>  
 Stats of network's packet information.  
 
@@ -837,10 +837,10 @@ state            | \<String> |see  "State Transition Table"                     
      |                            |             |                    | PUT topology      |
      |                            |             |                    |------------------>|
      |                            |             | changestatus(running)                  |
-     |                            |             |<-------------------|
+     |                            |             |&lt;-------------------|
      |                            |             |                    |
      |                            |PUT connections(status:running)   |
-     |                            |<------------|                    |
+     |                            |&lt;------------|                    |
      |                      [status:running]    |                    |
      |                            |             |                    |
      |                            |             |
@@ -867,12 +867,12 @@ state            | \<String> |see  "State Transition Table"                     
      |                            |             |------------------->|
      |                            |             |                    |
      |                            |             | changestatus(finalizing)
-     |                            |             |<-------------------|
+     |                            |             |&lt;-------------------|
      |                            |             |                    |
      |                            |PUT connections(status:finalizing)|
-     |                            |<------------|                    |
+     |                            |&lt;------------|                    |
      |        x[ConnectionChanged(UPDATE)](*)   |                    |
-     |                    x<------|x[ConnectionChanged(UPDATE)](*)   |
+     |                    x&lt;------|x[ConnectionChanged(UPDATE)](*)   |
      |                            |-->x         |                    |
      |                      [status:finalizing] |                    |
      |                            |             |                    |
@@ -884,14 +884,14 @@ state            | \<String> |see  "State Transition Table"                     
      |                            |             |                    |------------------>|
      |                            |             |                    |                   |
      |                            |             | changestatus(none) |                   |
-     |                            |             |<-------------------|                   |
+     |                            |             |&lt;-------------------|                   |
      |                            |PUT connections(status:none)      |
-     |                            |<------------|                    |
+     |                            |&lt;------------|                    |
      |                     [delete connection]  |
      |                            | x[ConnectionChanged(DELETE)](*)
      |                            |--->x        |
      |  x[ConnectionChanged(DELETE)](*)         |
-     |                     x<-----|             |
+     |                     x&lt;-----|             |
 
 (*) Event notification None.
 
