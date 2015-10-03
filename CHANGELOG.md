@@ -4,35 +4,40 @@
 ### New features
 #### Support Java version 1.8 
 * [#188] (https://github.com/o3project/odenos/pull/188) :QUICKSTART.md, 
+* [#178] (https://github.com/o3project/odenos/pull/178) : removed options unsupported off java-1.8
+* [#170] (https://github.com/o3project/odenos/pull/170) : We are supporting java-1.8 (only changed a document).
 
 #### zookeeper
 * [#186] (https://github.com/o3project/odenos/pull/186) : update Doc
 * [#183] (https://github.com/o3project/odenos/pull/183) : Suppressed system.out
+* [#177] (https://github.com/o3project/odenos/pull/177) : New znode path "/components" on ZooKeeper server
+* [#181] (https://github.com/o3project/odenos/pull/181) : changed about resource conflicts
+* [#171] (https://github.com/o3project/odenos/pull/171) : Purge ZooKeeper commit-logs at ODENOS startup
 
-### New APIs
+#### New APIs
 * [#187] (https://github.com/o3project/odenos/pull/187) : REST API , Attributes updates.
 
 ### Logging 
 * [#179] (https://github.com/o3project/odenos/pull/179) : enabled syslog output
+* [#167] (https://github.com/o3project/odenos/pull/167) : Migration from log4j to log4j2
+* [#165] (https://github.com/o3project/odenos/pull/165) : Log policy - does not output log to stdout
+* [#164] (https://github.com/o3project/odenos/pull/164) : making var/log directory in start-up script to avoid to race condition of log4j
+* [#161] (https://github.com/o3project/odenos/pull/161) : Log policy
 
+### GUI view(neo4j)
+* [#160] (https://github.com/o3project/odenos/pull/160) : neo4j topology
 
-* [#177] (https://github.com/o3project/odenos/pull/177)
-* [#182] (https://github.com/o3project/odenos/pull/182)
-* [#181] (https://github.com/o3project/odenos/pull/181)
-* [#180] (https://github.com/o3project/odenos/pull/180)
-* [#178] (https://github.com/o3project/odenos/pull/178)
-* [#169] (https://github.com/o3project/odenos/pull/169)
-* [#142] (https://github.com/o3project/odenos/pull/142)
-* [#171] (https://github.com/o3project/odenos/pull/171)
-* [#170] (https://github.com/o3project/odenos/pull/170)
-* [#167] (https://github.com/o3project/odenos/pull/167)
-* [#165] (https://github.com/o3project/odenos/pull/165)
-* [#166] (https://github.com/o3project/odenos/pull/166)
-* [#163] (https://github.com/o3project/odenos/pull/163)
-* [#164] (https://github.com/o3project/odenos/pull/164)
-* [#161] (https://github.com/o3project/odenos/pull/161)
-* [#160] (https://github.com/o3project/odenos/pull/160)
-* [#159] (https://github.com/o3project/odenos/pull/159)
+### Bugs fixed & Refactoring
+* [#185] (https://github.com/o3project/odenos/pull/185) : Wrong status of federated flow #184
+* [#182] (https://github.com/o3project/odenos/pull/182) : Misspelled word learning
+* [#180] (https://github.com/o3project/odenos/pull/180) : Rest servlet directory access
+* [#169] (https://github.com/o3project/odenos/pull/169) : OutputAction is missing upon translation from Federated
+* [#142] (https://github.com/o3project/odenos/pull/142): Use java.lang.Runtime instead of sun.misc.SignalHandler
+* [#166] (https://github.com/o3project/odenos/pull/166) : Fixed trivial implement mistakes
+* [#163] (https://github.com/o3project/odenos/pull/163) : deleted feature of 'admin_status' because of putting configuration outside
+* [#159] (https://github.com/o3project/odenos/pull/159) : checks ODENOS ComponentManager Started
+
+### Changes
 * [#155] (https://github.com/o3project/odenos/pull/155)
 * [#158] (https://github.com/o3project/odenos/pull/158)
 * [#157] (https://github.com/o3project/odenos/pull/157)
@@ -164,11 +169,6 @@
 * [#4] (https://github.com/o3project/odenos/pull/4)
 * [#3] (https://github.com/o3project/odenos/pull/3)
 * [#2] (https://github.com/o3project/odenos/pull/2)
-
-### Bugs fixed
-* [#185] (https://github.com/o3project/odenos/pull/185) : Wrong status of federated flow #184
-
-### Changes
 
 ## 1.1.0 (2/19/2015)
 ### 1st Release
