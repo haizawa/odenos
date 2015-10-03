@@ -2,13 +2,20 @@
 
 ## 1.1.0 (10/xx/2015)
 ### New features
-* [#188] (https://github.com/o3project/odenos/pull/188)
-* [#186] (https://github.com/o3project/odenos/pull/186)
-* [#187] (https://github.com/o3project/odenos/pull/187)
-* [#183] (https://github.com/o3project/odenos/pull/183)
-* [#185] (https://github.com/o3project/odenos/pull/185)
-* [#184] (https://github.com/o3project/odenos/pull/184)
-* [#179] (https://github.com/o3project/odenos/pull/179)
+#### Support Java version 1.8 
+* [#188] (https://github.com/o3project/odenos/pull/188) :QUICKSTART.md, 
+
+#### zookeeper
+* [#186] (https://github.com/o3project/odenos/pull/186) : update Doc
+* [#183] (https://github.com/o3project/odenos/pull/183) : Suppressed system.out
+
+### New APIs
+* [#187] (https://github.com/o3project/odenos/pull/187) : REST API , Attributes updates.
+
+### Logging 
+* [#179] (https://github.com/o3project/odenos/pull/179) : enabled syslog output
+
+
 * [#177] (https://github.com/o3project/odenos/pull/177)
 * [#182] (https://github.com/o3project/odenos/pull/182)
 * [#181] (https://github.com/o3project/odenos/pull/181)
@@ -157,7 +164,10 @@
 * [#4] (https://github.com/o3project/odenos/pull/4)
 * [#3] (https://github.com/o3project/odenos/pull/3)
 * [#2] (https://github.com/o3project/odenos/pull/2)
+
 ### Bugs fixed
+* [#185] (https://github.com/o3project/odenos/pull/185) : Wrong status of federated flow #184
+
 ### Changes
 
 ## 1.1.0 (2/19/2015)
